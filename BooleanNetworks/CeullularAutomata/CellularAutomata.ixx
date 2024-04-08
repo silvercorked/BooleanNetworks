@@ -13,8 +13,6 @@ import <random>;
 export using RuleFunctionType = std::function<bool(std::vector<bool> const&)>;
 export using MeanFieldApproximationFunctionType = std::function<f64(f64, u32)>;
 
-
-
 export namespace CellularAutomataResources {
 	namespace Utility {
 		auto countHighs(std::vector<bool> const& values) -> u32;
@@ -77,9 +75,10 @@ public:
 	auto gather() -> std::pair<f64, f64>;
 	auto gather(i32 times) -> std::pair<std::vector<f64>, std::vector<f64>>;
 
-	auto getEstimate() -> f64;
-	auto getActual() -> f64;
-	auto getError() -> f64;
+	auto getK() const -> u32;
+	auto getEstimate() const -> f64;
+	auto getActual() const -> f64;
+	auto getError() const -> f64;
 
 	auto setEstimate(f64 nEstimate) -> void;
 

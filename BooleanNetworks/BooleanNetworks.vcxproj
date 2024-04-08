@@ -38,6 +38,8 @@
     <ClCompile Include="Utilities\PackedBoolVector.cpp" />
     <ClCompile Include="Utilities\PackedBoolVector.ixx" />
     <ClCompile Include="Utilities\PrimitiveTypes.ixx" />
+    <ClCompile Include="Utilities\ThreadPool.cpp" />
+    <ClCompile Include="Utilities\ThreadPool.ixx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -125,7 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>

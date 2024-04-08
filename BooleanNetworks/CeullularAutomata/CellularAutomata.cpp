@@ -69,10 +69,9 @@ CellularAutomata::CellularAutomata(
 auto CellularAutomata::go() -> void {
 	auto& writeTo = (this->which ? this->data : this->data2);
 	auto& readFrom = (this->which ? this->data2 : this->data);
-	u32 i = 0;
 	i32 halfK = ((this->k - 1) >> 1); // k = 3, means 2 other parents and 1 self refernce
 	i32 size = this->data.size();
-	for (; i < size; i++) {
+	for (i32 i = 0; i < size; i++) {
 		std::vector<bool> args;
 		args.reserve(this->k);
 		for (auto j : this->indexMap[i])
@@ -106,13 +105,16 @@ auto CellularAutomata::gather(i32 times) -> std::pair<std::vector<f64>, std::vec
 	return std::make_pair(estimates, actuals);
 }
 
-auto CellularAutomata::getEstimate() -> f64 {
+auto CellularAutomata::getK() const -> u32 {
+	return this->k;
+}
+auto CellularAutomata::getEstimate() const -> f64 {
 	return this->estimate;
 }
-auto CellularAutomata::getActual() -> f64 {
+auto CellularAutomata::getActual() const -> f64 {
 	return this->actual;
 }
-auto CellularAutomata::getError() -> f64 {
+auto CellularAutomata::getError() const -> f64 {
 	return abs(this->actual - this->estimate);
 }
 
@@ -121,10 +123,9 @@ auto CellularAutomata::setEstimate(f64 nEstimate) -> void {
 }
 
 auto CellularAutomata::setupNonRandomParents() -> void {
-	u32 i = 0;
 	const i32 halfK = ((this->k - 1) >> 1); // k = 3, means 2 other parents and 1 self refernce
 	const i32 size = this->data.size();
-	for (; i < size; i++) {
+	for (i32 i = 0; i < size; i++) {
 		std::vector<u32> args;
 		args.reserve(k);
 		for (i32 j = -halfK; j <= halfK; j++) {
@@ -137,14 +138,13 @@ auto CellularAutomata::setupNonRandomParents() -> void {
 	}
 }
 auto CellularAutomata::setupRandomParents() -> void {
-	u32 i = 0;
 	const i32 size = this->data.size();
 	const u32 parentsToFind = this->k - 1;
-	std::uniform_int_distribution<u32> dist(0, this->k - 1);
-	for (; i < size; i++) {
+	std::uniform_int_distribution<u32> dist(0, size - 1);
+	for (i32 i = 0; i < size; i++) {
 		std::set<u32> parentIndexes{};
 		parentIndexes.insert(i);
-		while (parentIndexes.size() <= size)
+		while (parentIndexes.size() <= parentsToFind)
 			parentIndexes.insert(dist(this->gen));
 		this->indexMap[i] = std::vector<u32>(parentIndexes.begin(), parentIndexes.end());
 	}
