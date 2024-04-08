@@ -30,9 +30,11 @@
     <ClCompile Include="Stats\Mean.ixx" />
     <ClCompile Include="Stats\Median.ixx" />
     <ClCompile Include="Stats\Midrange.ixx" />
+    <ClCompile Include="Stats\MinMax.ixx" />
     <ClCompile Include="Stats\Mode.ixx" />
     <ClCompile Include="Stats\PearsonCorrelationCoefficient.ixx" />
     <ClCompile Include="Stats\Skewness.ixx" />
+    <ClCompile Include="Stats\StandardScore.ixx" />
     <ClCompile Include="Stats\Statistics.ixx" />
     <ClCompile Include="Stats\Variance.ixx" />
     <ClCompile Include="Utilities\PackedBoolVector.cpp" />

@@ -13,7 +13,8 @@ export namespace Stats {
 	template <NumericRange Range>
 	auto frequency(Range&& values) -> std::unordered_map<std::ranges::range_value_t<decltype(values)>, u32> {
 		std::unordered_map<std::ranges::range_value_t<decltype(values)>, u32> freq{};
-		for (size_t i = 0; i < values.size(); i++) {
+		const auto len = values.size();
+		for (auto i = 0; i < len; i++) {
 			if (freq.find(values[i]) != freq.end())
 				freq[values[i]]++;
 			else
@@ -25,7 +26,8 @@ export namespace Stats {
 	auto mode(Range&& values) -> std::vector<std::ranges::range_value_t<decltype(values)>> {
 		std::unordered_map<std::ranges::range_value_t<decltype(values)>, u32> freq{};
 		u32 largestCount = 1; // can start at 1 safetly, if empty, still gives empty array in the end
-		for (size_t i = 0; i < values.size(); i++) {
+		const auto len = values.size();
+		for (auto i = 0; i < len; i++) {
 			if (freq.find(values[i]) != freq.end()) {
 				freq[values[i]]++;
 				if (freq[values[i]] > largestCount) largestCount++; // should be equivalent (since only even increment prev values) and avoids assignment and [] lookups

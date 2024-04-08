@@ -63,7 +63,7 @@ auto main() -> int {
 	//std::cout << "pop skew: " << popSkew << std::endl;
 	//std::cout << "samp skew: " << sampSkew << std::endl;
 
-	constexpr const u32 iterations = 10000;
+	constexpr const u32 iterations = 500;
 	std::unique_ptr<ThreadPool> tp = std::make_unique<ThreadPool>(16);
 	u32 k = 3;
 	std::vector<CellularAutomata> models;
@@ -135,7 +135,23 @@ auto main() -> int {
 		auto actPopSkewness = Stats::populationSkewness(vals[i].second, actMean, actPopStdDeviation);
 
 		auto covariance = Stats::covariance(vals[i].first, vals[i].second, estMean, actMean);
+		auto sampCovariance = Stats::sampleCovariance(vals[i].first, vals[i].second, estMean, actMean);
 
+		auto estMin = Stats::min(vals[i].first);
+		auto actMin = Stats::min(vals[i].second);
+
+		auto estMax = Stats::max(vals[i].first);
+		auto actMax = Stats::max(vals[i].second);
+
+		auto popPCC = Stats::populationPearsonCorrelationCoefficient(
+			vals[i].first, vals[i].second,
+			estMean, actMean,
+			estPopStdDeviation, actPopStdDeviation
+		);
+		auto sampPCC = Stats::samplePearsonCorrelationCoefficient(
+			vals[i].first, vals[i].second,
+			estMean, actMean
+		);
 
 		std::cout << "-------------Results (k = " << models[i].getK() << ") -------------" << std::endl;
 		std::cout << "\testimated mean: " << estMean << std::endl;
@@ -179,6 +195,16 @@ auto main() -> int {
 		std::cout << "\tactual population skewness: " << actPopSkewness << std::endl;
 
 		std::cout << "\tcovariance: " << covariance << std::endl;
+		std::cout << "\tsample covariance: " << sampCovariance << std::endl;
+
+		std::cout << "\testimated min: " << estMin << std::endl;
+		std::cout << "\tactual min: " << actMin << std::endl;
+
+		std::cout << "\testimated max: " << estMax << std::endl;
+		std::cout << "\tactual max: " << actMax << std::endl;
+
+		std::cout << "\tpopulation Pearson Correlation Coefficient: " << popPCC << std::endl;
+		std::cout << "\tsample Pearson Correlation Coefficient: " << sampPCC << std::endl;
 		std::cout << "-----------End Results (k = " << models[i].getK() << ") -----------" << std::endl;
 	}
 	

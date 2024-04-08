@@ -10,13 +10,13 @@ import <cmath>;
 
 template <NumericRange Range>
 auto variance(Range&& values, const f64 preCalculatedMean = NOT_GIVEN, bool sample = true) -> f64 {
-	f64 len = static_cast<f64>(values.size());
+	const f64 len = static_cast<f64>(values.size());
 	if (len <= 1) return 0.0; // need at least 2 things for a variance/standard deviation
 	const f64 mean = isGiven(preCalculatedMean) ? preCalculatedMean : Stats::arithmeticMean(values);
-	f64 cumulative = 0.0;
+	f64 accumulator = 0.0;
 	for (const auto val : values)
-		cumulative += pow(static_cast<f64>(val) - mean, 2);
-	return cumulative / (len - static_cast<f64>(sample ? 1 : 0));
+		accumulator += pow(static_cast<f64>(val) - mean, 2);
+	return accumulator / (len - static_cast<f64>(sample ? 1 : 0));
 }
 
 export namespace Stats {
@@ -41,18 +41,40 @@ export namespace Stats {
 	}
 
 	template <NumericRange Range>
-	auto covariance(Range&& values1, Range&& values2, const f64 preCalculatedMean1 = NOT_GIVEN, const f64 preCalculatedMean2 = NOT_GIVEN) -> f64 {
-		f64 len = static_cast<f64>(values1.size());
-		if (values1.size() != values2.size()) return 0.0; // cannot give covariance if different lengths
-		f64 mean1 = isGiven(preCalculatedMean1) ? preCalculatedMean1 : Stats::arithmeticMean(values1);
-		f64 mean2 = isGiven(preCalculatedMean2) ? preCalculatedMean2 : Stats::arithmeticMean(values2);
+	auto covariance(
+		Range&& values1,
+		Range&& values2,
+		const f64 preCalculatedMean1 = NOT_GIVEN,
+		const f64 preCalculatedMean2 = NOT_GIVEN
+	) -> f64 {
+		const f64 len = static_cast<f64>(values1.size());
+		if (values1.size() != values2.size() || len == 0) return 0.0; // cannot give covariance if different lengths
+		const f64 mean1 = isGiven(preCalculatedMean1) ? preCalculatedMean1 : Stats::arithmeticMean(values1);
+		const f64 mean2 = isGiven(preCalculatedMean2) ? preCalculatedMean2 : Stats::arithmeticMean(values2);
 		f64 accum = 0;
-		for (u32 i = 0; i < values1.size(); i++) {
+		for (i32 i = 0; i < values1.size(); i++) {
 			accum += (
-				(static_cast<f64>(values1[i]) - mean1) + (static_cast<f64>(values2[i]) - mean2)
+				(static_cast<f64>(values1[i]) - mean1) * (static_cast<f64>(values2[i]) - mean2)
 			) / len;
 		}
 		return accum;
+	}
+	template <NumericRange Range>
+	auto sampleCovariance(
+		Range&& values1,
+		Range&& values2,
+		const f64 preCalculatedMean1 = NOT_GIVEN,
+		const f64 preCalculatedMean2 = NOT_GIVEN
+	) -> f64 {
+		const f64 len = static_cast<f64>(values1.size());
+		if (values1.size() != values2.size() || len <= 1) return 0.0;
+		const f64 mean1 = isGiven(preCalculatedMean1) ? preCalculatedMean1 : Stats::arithmeticMean(values1);
+		const f64 mean2 = isGiven(preCalculatedMean2) ? preCalculatedMean2 : Stats::arithmeticMean(values2);
+		f64 accum = 0;
+		for (i32 i = 0; i < values1.size(); i++) {
+			accum += (static_cast<f64>(values1[i]) - mean1) * (static_cast<f64>(values2[i]) - mean2);
+		}
+		return accum / (len - 1.0);
 	}
 
 	template <IsNumeric NumericType>

@@ -10,7 +10,7 @@ import <cmath>;
 export namespace Stats {
 	template <NumericRange Range>
 	auto arithmeticMean(Range&& values) -> f64 {
-		f64 len = static_cast<f64>(values.size());
+		const f64 len = static_cast<f64>(values.size());
 		if (len == 0) return 0.0;
 		f64 sum = 0.0;
 		for (auto const& val : values)
@@ -26,7 +26,7 @@ export namespace Stats {
 
 	template <NumericRange Range>
 	auto geometricMean(Range&& values) -> f64 {
-		f64 len = static_cast<f64>(values.size());
+		const f64 len = static_cast<f64>(values.size());
 		f64 product = 1;
 		for (auto const& val : values)
 			product *= std::pow( // technically u do the multiplcations first then do the exponent
@@ -37,7 +37,7 @@ export namespace Stats {
 
 	template <NumericRange Range>
 	auto harmonicMean(Range&& values) -> f64 {
-		f64 len = static_cast<f64>(values.size());
+		const f64 len = static_cast<f64>(values.size());
 		if (len == 0) return 0.0;
 		f64 sum = 0;
 		for (auto const& val : values)

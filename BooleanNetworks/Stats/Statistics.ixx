@@ -6,10 +6,12 @@ import :InternalUtilities;
 export import :Mean;
 export import :Median;
 export import :Midrange;
+export import :MinMax;
 export import :Mode;
 export import :Skewness;
 export import :Variance;
 
+export import :StandardScore;
 export import :PearsonCorrelationCoefficient;
 
 
