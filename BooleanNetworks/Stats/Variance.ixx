@@ -40,6 +40,21 @@ export namespace Stats {
 		return sqrt(variance(values, preCalculatedMean, false));
 	}
 
+	template <NumericRange Range>
+	auto covariance(Range&& values1, Range&& values2, const f64 preCalculatedMean1 = NOT_GIVEN, const f64 preCalculatedMean2 = NOT_GIVEN) -> f64 {
+		f64 len = static_cast<f64>(values1.size());
+		if (values1.size() != values2.size()) return 0.0; // cannot give covariance if different lengths
+		f64 mean1 = isGiven(preCalculatedMean1) ? preCalculatedMean1 : Stats::arithmeticMean(values1);
+		f64 mean2 = isGiven(preCalculatedMean2) ? preCalculatedMean2 : Stats::arithmeticMean(values2);
+		f64 accum = 0;
+		for (u32 i = 0; i < values1.size(); i++) {
+			accum += (
+				(static_cast<f64>(values1[i]) - mean1) + (static_cast<f64>(values2[i]) - mean2)
+			) / len;
+		}
+		return accum;
+	}
+
 	template <IsNumeric NumericType>
 	auto populationVarianceOnline( // https://math.stackexchange.com/questions/102978/incremental-computation-of-standard-deviation
 		u32 size,

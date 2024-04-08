@@ -10,6 +10,10 @@ export import :Mode;
 export import :Skewness;
 export import :Variance;
 
+export import :PearsonCorrelationCoefficient;
+
+
+
 /*
 	Almost all these functions take range r-value references are input,
 	but despite being r-value refs that imply a move has occured

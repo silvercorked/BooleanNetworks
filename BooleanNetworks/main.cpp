@@ -13,13 +13,14 @@ import <vector>;
 import <utility>;
 
 auto main() -> int {
-
+	
 	/*
 	next steps
 	add bucketizing function (similar to frequency but ranges of values like histogram buckets)
 	add variance online algorithms
 	*/
 
+	
 	Network net{};
 	bool stuffsGood = true;
 	stuffsGood &= net.addNode("and1", NodeFunctions::AND_2, 2);
@@ -54,8 +55,14 @@ auto main() -> int {
 			std::cout << "\t" << nodeName << ": " << val << std::endl;
 		}
 	}
+	
+	//std::vector<f32> skewTest = { 3, 8, 10, 17, 24, 27 };
+	//f32 popSkew = Stats::populationSkewness(skewTest);
+	//f32 sampSkew = Stats::sampleSkewness(skewTest);
+	//std::cout << "pop skew: " << popSkew << std::endl;
+	//std::cout << "samp skew: " << sampSkew << std::endl;
 
-	/*constexpr const u32 iterations = 10000;
+	constexpr const u32 iterations = 1000;
 	CellularAutomata a(
 		1024,
 		15,
@@ -95,8 +102,8 @@ auto main() -> int {
 	auto estMidrange = Stats::midrange(vals.first);
 	auto actMidrange = Stats::midrange(vals.second);
 
-	auto estMode = Stats::mode(vals.first);
-	auto actMode = Stats::mode(vals.second);
+	//auto estMode = Stats::mode(vals.first);
+	//auto actMode = Stats::mode(vals.second);
 
 	auto estSampVariance = Stats::sampleVariance(vals.first, estMean);
 	auto actSampVariance = Stats::sampleVariance(vals.second, actMean);
@@ -116,6 +123,9 @@ auto main() -> int {
 	auto estPopSkewness = Stats::populationSkewness(vals.first, estMean, estPopStdDeviation);
 	auto actPopSkewness = Stats::populationSkewness(vals.second, actMean, actPopStdDeviation);
 
+	auto covariance = Stats::covariance(vals.first, vals.second, estMean, actMean);
+
+
 	std::cout << "-------------Results-------------" << std::endl;
 	std::cout << "\testimated mean: " << estMean << std::endl;
 	std::cout << "\tactual mean: " << actMean << std::endl;
@@ -132,12 +142,12 @@ auto main() -> int {
 	std::cout << "\testimated midrange: " << estMidrange << std::endl;
 	std::cout << "\tactual midrange: " << actMidrange << std::endl;
 
-	std::cout << "\testimated mode: "; // https://stackoverflow.com/questions/10750057/how-do-i-print-out-the-contents-of-a-vector
-	std::ranges::copy(estMode, std::ostream_iterator<f64>(std::cout, ", "));
-	std::cout << std::endl;
-	std::cout << "\tactual mode: ";
-	std::ranges::copy(actMode, std::ostream_iterator<f64>(std::cout, ", "));
-	std::cout << std::endl;
+	//std::cout << "\testimated mode: "; // https://stackoverflow.com/questions/10750057/how-do-i-print-out-the-contents-of-a-vector
+	//std::ranges::copy(estMode, std::ostream_iterator<f64>(std::cout, ", "));
+	//std::cout << std::endl;
+	//std::cout << "\tactual mode: ";
+	//std::ranges::copy(actMode, std::ostream_iterator<f64>(std::cout, ", "));
+	//std::cout << std::endl;
 
 	std::cout << "\testimated sample variance: " << estSampVariance << std::endl;
 	std::cout << "\tactual sample variance: " << actSampVariance << std::endl;
@@ -156,7 +166,9 @@ auto main() -> int {
 
 	std::cout << "\testimated population skewness: " << estPopSkewness << std::endl;
 	std::cout << "\tactual population skewness: " << actPopSkewness << std::endl;
+
+	std::cout << "\tcovariance: " << covariance << std::endl;
 	std::cout << "-----------End Results-----------" << std::endl;
-	*/
+	
 	return 0;
 }
