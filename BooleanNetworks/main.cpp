@@ -1,10 +1,10 @@
 
+import PrimitiveTypes;
+
 import BooleanNetwork;
 import CellularAutomata;
 import Statistics;
 import ThreadPool;
-
-import PrimitiveTypes;
 
 import <iostream>;
 import <iterator>;
@@ -12,9 +12,12 @@ import <ranges>;
 import <algorithm>;
 import <vector>;
 import <utility>;
+import <fstream>;
 
 auto main() -> int {
 	
+	std::ofstream out("output.csv");
+
 	/*
 	next steps
 	add bucketizing function (similar to frequency but ranges of values like histogram buckets)
@@ -63,18 +66,20 @@ auto main() -> int {
 	//std::cout << "pop skew: " << popSkew << std::endl;
 	//std::cout << "samp skew: " << sampSkew << std::endl;
 
-	constexpr const u32 iterations = 500;
+	
+	constexpr const u32 iterations = 5000;
 	std::unique_ptr<ThreadPool> tp = std::make_unique<ThreadPool>(16);
 	u32 k = 3;
 	std::vector<CellularAutomata> models;
 	std::vector<std::pair<std::vector<f64>, std::vector<f64>>> vals;
-	for (; k <= 15; k += 2) {
-		models.push_back(CellularAutomata{ 1024,
+	for (; k <= 35; k += 2) {
+		models.push_back(CellularAutomata{
+			1024 * 32,
 			k,
 			CellularAutomataResources::ruleFunc22,
 			CellularAutomataResources::meanFieldApproximationRule22,
 			CellularAutomataParentConfigEnum::RANDOMIZE_PARENTS,
-			CellularAutomataInitialConfigEnum::ONE_HIGH
+			CellularAutomataInitialConfigEnum::RANDOM
 		});
 		vals.push_back(std::make_pair<std::vector<f64>, std::vector<f64>>({}, {}));
 		vals[vals.size() - 1].first.reserve(iterations);
@@ -97,6 +102,38 @@ auto main() -> int {
 	while (tp->busy()) { std::this_thread::yield(); }
 	tp.reset(); // destroy, thus joining threads. turns to nullptr
 	
+	for (i32 i = 0; i < models.size(); i++) {
+		out << "estimated " << models[i].getK() << ", actual" << models[i].getK() << ", ";
+	}
+	out << std::endl;
+
+	for (i32 i = 0; i < vals[0].first.size(); i++) {
+		for (i32 j = 0; j < models.size(); j++) {
+			out << vals[j].first[i] << ", " << vals[j].second[i] << ", ";
+		}
+		out << std::endl;
+	}
+
+	out << std::endl;
+	out << std::endl;
+
+	out << ", estimated mean, actual mean"
+		<< ", estimated geometric mean, actual geometric mean"
+		<< ", estimated harmonic mean, actual harmonic mean"
+		<< ", estimated median, actual median"
+		<< ", estimated midrange, actual midrange"
+		<< ", estimated sample variance, actual sample variance"
+		<< ", estimated sample deviation, actual sample deviation"
+		<< ", estimated population variance, actual population variance"
+		<< ", estimated population deviation, actual population deviation"
+		<< ", estimated sample skewness, actual sample skewness"
+		<< ", estimated population skewness, actual population skewness"
+		<< ", covariance, sample covariance"
+		<< ", estimated min, actual min"
+		<< ", estimated max, actual max"
+		<< ", sample Pearson Correlation Coefficient, population Pearson Correlation Coefficient"
+		<< std::endl;
+
 	for (i32 i = 0; i < models.size(); i++) {
 		auto estMean = Stats::arithmeticMean(vals[i].first);
 		auto actMean = Stats::arithmeticMean(vals[i].second);
@@ -206,7 +243,25 @@ auto main() -> int {
 		std::cout << "\tpopulation Pearson Correlation Coefficient: " << popPCC << std::endl;
 		std::cout << "\tsample Pearson Correlation Coefficient: " << sampPCC << std::endl;
 		std::cout << "-----------End Results (k = " << models[i].getK() << ") -----------" << std::endl;
+
+		out << "k = " << models[i].getK() << ","
+			<< estMean << "," << actMean << ","
+			<< estGeoMean << "," << actGeoMean << ","
+			<< estHarmMean << "," << actHarmMean << ","
+			<< estMedian << "," << actMedian << ","
+			<< estMidrange << "," << actMidrange << ","
+			<< estSampVariance << "," << actSampVariance << ","
+			<< estSampStdDeviation << "," << actSampStdDeviation << ","
+			<< estPopVariance << "," << actPopVariance << ","
+			<< estPopStdDeviation << "," << actPopStdDeviation << ","
+			<< estSampSkewness << "," << actSampSkewness << ","
+			<< estPopSkewness << "," << actPopSkewness << ","
+			<< covariance << "," << sampCovariance << ","
+			<< estMin << "," << actMin << ","
+			<< estMax << "," << actMax << ","
+			<< sampPCC << "," << popPCC << ","
+			<< std::endl;
 	}
-	
+
 	return 0;
 }
