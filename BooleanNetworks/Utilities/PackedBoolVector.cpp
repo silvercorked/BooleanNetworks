@@ -49,3 +49,11 @@ auto PackedBoolVector::clear() -> void {
 	for (u32 set : this->data)
 		set = 0;
 }
+
+auto PackedBoolVector::equal(const PackedBoolVector& other) const -> bool {
+	if (this->size() != other.size()) return false;
+	for (i32 i = 0; i < this->size(); i++) {
+		if (this->at(i) != other.at(i)) return false;
+	}
+	return true;
+}

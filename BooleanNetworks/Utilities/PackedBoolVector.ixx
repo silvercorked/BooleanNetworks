@@ -22,4 +22,6 @@ public:
 
 	auto popcount() const -> u32;
 	auto clear() -> void;
+
+	auto equal(const PackedBoolVector&) const -> bool;
 };
