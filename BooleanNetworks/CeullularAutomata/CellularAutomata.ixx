@@ -3,6 +3,8 @@ module;
 export module CellularAutomata;
 
 import PrimitiveTypes;
+
+import ThreadPool;
 import PackedBoolVector;
 
 import <functional>;
@@ -74,6 +76,9 @@ public:
 	auto go(i32 times) -> void;
 	auto gather() -> std::pair<f64, f64>;
 	auto gather(i32 times) -> std::pair<std::vector<f64>, std::vector<f64>>;
+
+	auto goWithThreads(const i32 numThreads) -> void;
+	auto gatherWithThreads(const i32 numThreads) -> std::pair<f64, f64>;
 
 	auto getK() const -> u32;
 	auto getEstimate() const -> f64;

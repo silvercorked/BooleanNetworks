@@ -67,12 +67,12 @@ auto main() -> int {
 	//std::cout << "samp skew: " << sampSkew << std::endl;
 
 	
-	constexpr const u32 iterations = 5000;
-	std::unique_ptr<ThreadPool> tp = std::make_unique<ThreadPool>(16);
+	constexpr const u32 iterations = 10000;
+	std::unique_ptr<ThreadPool> tp = std::make_unique<ThreadPool>(1); // increasing this increases runtime of all instances. I think its related to reading and writing on the model and vals variables
 	u32 k = 3;
 	std::vector<CellularAutomata> models;
 	std::vector<std::pair<std::vector<f64>, std::vector<f64>>> vals;
-	for (; k <= 35; k += 2) {
+	for (; k <= 25; k += 2) {
 		models.push_back(CellularAutomata{
 			1024 * 32,
 			k,
@@ -87,14 +87,19 @@ auto main() -> int {
 	}
 	
 	for (i32 i = 0; i < models.size(); i++) {
-		tp->queueTask([&models, &vals, i]() -> void {
+		tp->queueTask([&model = models[i], &localVals = vals[i]]() -> void {
+			auto currentTime = std::chrono::high_resolution_clock::now();
 			for (u32 j = 0; j < iterations; j++) {
-				auto val = models[i].gather(); // grab one at a time to keep output coming out
-				std::cout << "k: " << models[i].getK() << " run: " << (j + 1) << std::endl;
+				auto val = model.gatherWithThreads(8); // grab one at a time to keep output coming out
+				std::cout << "k: " << model.getK() << " run: " << (j + 1) << std::endl;
 				//	<< "\testimate: " << val.first << std::endl
 				//	<< "\tactual: " << val.second << std::endl;
-				vals[i].first.push_back(val.first);
-				vals[i].second.push_back(val.second);
+				localVals.first.push_back(val.first);
+				localVals.second.push_back(val.second);
+				auto newTime = std::chrono::high_resolution_clock::now();
+				float frameTime = std::chrono::duration<float, std::chrono::milliseconds::period>(newTime - currentTime).count();
+				currentTime = newTime;
+				std::cout << "Iteration Time: " << frameTime << std::endl;
 			}
 		});
 	}

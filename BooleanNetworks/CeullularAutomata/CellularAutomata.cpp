@@ -3,6 +3,7 @@ module CellularAutomata;
 
 import <set>;
 import <stdexcept>;
+import <thread>;
 
 namespace CellularAutomataResources {
 	namespace Utility {
@@ -103,6 +104,52 @@ auto CellularAutomata::gather(i32 times) -> std::pair<std::vector<f64>, std::vec
 		actuals.push_back(res.second);
 	}
 	return std::make_pair(estimates, actuals);
+}
+
+auto CellularAutomata::goWithThreads(const i32 numThreads) -> void {
+	if (numThreads < 1)
+		throw std::runtime_error("must use at least 1 thread");
+	auto& writeTo = (this->which ? this->data : this->data2);
+	const auto& readFrom = (this->which ? this->data2 : this->data);
+	i32 halfK = ((this->k - 1) >> 1); // k = 3, means 2 other parents and 1 self refernce
+	const i32 size = this->data.size();
+	const i32 numPerThread = size / numThreads;
+	const i32 currThreadEnd = numPerThread;
+	{
+		std::unique_ptr<ThreadPool> tp;
+		if (numThreads > 1) {
+			tp = std::make_unique<ThreadPool>(numThreads - 1);
+			for (i32 i = 1; i < numThreads; i++) {
+				tp->queueTask([this, size, numThreads, numPerThread, i, &writeTo, &readFrom]() -> void {
+					i32 end = i == numThreads - 1 ? size : i * numPerThread;
+					for (i32 j = i * numPerThread; j < end; j++) {
+						std::vector<bool> args;
+						args.reserve(this->k);
+						for (const auto l : this->indexMap[j])
+							args.push_back(readFrom.at(l));
+						writeTo.setTo(j, this->ruleFunc(args));
+					}
+				});
+			}
+		}
+		for (i32 i = 0; i < currThreadEnd; i++) { // do a portion while threads go
+			std::vector<bool> args;
+			args.reserve(this->k);
+			for (auto j : this->indexMap[i])
+				args.push_back(readFrom.at(j));
+			writeTo.setTo(i, this->ruleFunc(args));
+		}
+		if (numThreads > 1)
+			while (tp->busy()) { std::this_thread::yield(); } // wait for queue to empty (should already be empty)
+	} // wait for threads to end work
+	// now update estimate and actual
+	this->estimate = this->meanFieldApproximationFunc(this->estimate, this->k);
+	this->actual = this->getCurrentDensity();
+	this->which = !this->which;
+}
+auto CellularAutomata::gatherWithThreads(const i32 numThreads) -> std::pair<f64, f64> {
+	this->goWithThreads(numThreads);
+	return std::make_pair<f64, f64>(this->getEstimate(), this->getActual());
 }
 
 auto CellularAutomata::getK() const -> u32 {
