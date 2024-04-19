@@ -4,6 +4,7 @@ module CellularAutomata;
 import <set>;
 import <stdexcept>;
 import <thread>;
+import <chrono>;
 
 namespace CellularAutomataResources {
 	namespace Utility {
@@ -46,11 +47,11 @@ CellularAutomata::CellularAutomata(
 		meanFieldApproximationFunction
 	),
 	k(parentCount),
-	indexMap()
+	indexMap(),
+	gen(std::chrono::system_clock::now().time_since_epoch().count())
 {
 	if (size == 0)
 		std::runtime_error("Cannot be of size 0.");
-	this->gen.discard(10000);
 
 	if (parentSetup == CellularAutomataParentConfigEnum::RANDOMIZE_PARENTS)
 		this->setupRandomParents();
