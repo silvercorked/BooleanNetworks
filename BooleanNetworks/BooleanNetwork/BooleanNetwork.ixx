@@ -1,6 +1,10 @@
 
 export module BooleanNetwork;
 
+export import :CellularAutomata;
+export import :CellularAutomataEstimator;
+export import :CellularAutomataResources;
+
 export import :Node;
 export import :Network;
 export import :Functions;

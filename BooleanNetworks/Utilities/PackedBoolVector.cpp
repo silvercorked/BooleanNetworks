@@ -11,7 +11,7 @@ PackedBoolVector::PackedBoolVector(u32 size) : data() {
 	u32 nSize = remainder != 0
 		? (size / this->DataTypeSize) + 1
 		: (size / this->DataTypeSize);
-	this->data.resize(nSize);
+	this->data.resize(nSize, 0); // set size and clear
 	this->dataSize = static_cast<u32>(this->data.size());
 	this->offset = remainder != 0
 		? remainder - 1
@@ -48,4 +48,13 @@ auto PackedBoolVector::popcount() const -> u32 {
 auto PackedBoolVector::clear() -> void {
 	for (u32 set : this->data)
 		set = 0;
+}
+
+auto PackedBoolVector::getAtUnderlyingIndex(u32 index) const -> u32 {
+	if (index >= this->data.size())
+		throw std::out_of_range("Index out of range for internal array!");
+	return this->data[index];
+}
+auto PackedBoolVector::underlyingSize() const -> i32 {
+	return static_cast<i32>(this->data.size());
 }

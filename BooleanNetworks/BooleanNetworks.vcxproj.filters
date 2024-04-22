@@ -21,19 +21,16 @@
     <ClCompile Include="BooleanNetwork\BooleanNetwork.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BooleanNetwork\Functions.ixx">
+    <ClCompile Include="BooleanNetwork\Network\Functions.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BooleanNetwork\Network.ixx">
+    <ClCompile Include="BooleanNetwork\Network\Network.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BooleanNetwork\Node.ixx">
+    <ClCompile Include="BooleanNetwork\Network\Node.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CeullularAutomata\CellularAutomata.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CeullularAutomata\CellularAutomata.ixx">
+    <ClCompile Include="BooleanNetwork\CeullularAutomata\CellularAutomata.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Stats\InternalUtilities.ixx">
@@ -67,6 +64,33 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utilities\PrimitiveTypes.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stats\MinMax.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stats\PearsonCorrelationCoefficient.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stats\StandardScore.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\ThreadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\ThreadPool.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\PeriodicityTracker.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\PeriodicityTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BooleanNetwork\CeullularAutomata\CellularAutomataEstimator.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BooleanNetwork\CeullularAutomata\CellularAutomataResources.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

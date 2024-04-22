@@ -22,4 +22,19 @@ public:
 
 	auto popcount() const -> u32;
 	auto clear() -> void;
+
+	auto operator==(const PackedBoolVector& rhs) const -> bool {
+		if (this->size() != rhs.size()) return false;
+		for (i32 i = 0; i < this->underlyingSize(); i++) {
+			if (this->getAtUnderlyingIndex(i) != rhs.getAtUnderlyingIndex(i))
+				return false;
+		}
+		return true;
+	}
+
+private:
+	auto getAtUnderlyingIndex(u32) const -> u32;
+	auto underlyingSize() const -> i32;
 };
+
+

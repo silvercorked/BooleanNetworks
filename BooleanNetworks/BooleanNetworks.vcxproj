@@ -20,11 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BooleanNetwork\BooleanNetwork.ixx" />
-    <ClCompile Include="BooleanNetwork\Functions.ixx" />
-    <ClCompile Include="BooleanNetwork\Network.ixx" />
-    <ClCompile Include="BooleanNetwork\Node.ixx" />
-    <ClCompile Include="CeullularAutomata\CellularAutomata.cpp" />
-    <ClCompile Include="CeullularAutomata\CellularAutomata.ixx" />
+    <ClCompile Include="BooleanNetwork\CeullularAutomata\CellularAutomataResources.ixx" />
+    <ClCompile Include="BooleanNetwork\Network\Functions.ixx" />
+    <ClCompile Include="BooleanNetwork\Network\Network.ixx" />
+    <ClCompile Include="BooleanNetwork\Network\Node.ixx" />
+    <ClCompile Include="BooleanNetwork\CeullularAutomata\CellularAutomata.ixx" />
+    <ClCompile Include="BooleanNetwork\CeullularAutomata\CellularAutomataEstimator.ixx" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Stats\InternalUtilities.ixx" />
     <ClCompile Include="Stats\Mean.ixx" />
@@ -39,6 +40,8 @@
     <ClCompile Include="Stats\Variance.ixx" />
     <ClCompile Include="Utilities\PackedBoolVector.cpp" />
     <ClCompile Include="Utilities\PackedBoolVector.ixx" />
+    <ClCompile Include="Utilities\PeriodicityTracker.cpp" />
+    <ClCompile Include="Utilities\PeriodicityTracker.ixx" />
     <ClCompile Include="Utilities\PrimitiveTypes.ixx" />
     <ClCompile Include="Utilities\ThreadPool.cpp" />
     <ClCompile Include="Utilities\ThreadPool.ixx" />
