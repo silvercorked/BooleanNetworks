@@ -45,9 +45,19 @@ class StatsPack {
 		this->vals = std::make_pair<std::vector<f64>, std::vector<f64>>({}, {});
 	};
 };
-
-auto doTrial(u32 k, u32 iterations) -> StatsPack {
-	StatsPack statPack{};
+auto doEstimate(StatsPack& data, u32 k, u32 iterations) -> bool {
+	auto estimator = CellularAutomataEstimator{
+		k,
+		CellularAutomataResources::meanFieldApproximationRule22
+	};
+	data.vals.first.clear();
+	data.vals.first.reserve(iterations);
+	for (u32 j = 0; j < iterations; j++) {
+		data.vals.first.push_back(estimator.gather());
+	}
+	return true;
+}
+auto doTrial(StatsPack& data, u32 k, u32 iterations) -> bool {
 	auto model = CellularAutomata{
 		nodeCount,
 		k,
@@ -55,18 +65,13 @@ auto doTrial(u32 k, u32 iterations) -> StatsPack {
 		CellularAutomataResources::CellularAutomataParentConfigEnum::RANDOMIZE_PARENTS,
 		CellularAutomataResources::CellularAutomataInitialConfigEnum::RANDOM
 	};
-	auto estimator = CellularAutomataEstimator{
-		k,
-		CellularAutomataResources::meanFieldApproximationRule22
-	};
 	PeriodicityTracker pt(10);
-	statPack.vals.first.reserve(iterations);
-	statPack.vals.second.reserve(iterations); // may not all be used cause periodicity tracker might cause early break
+	data.vals.second.clear();
+	data.vals.second.reserve(iterations); // may not all be used cause periodicity tracker might cause early break
 	auto currentTime = std::chrono::high_resolution_clock::now();
 	for (u32 j = 0; j < iterations; j++) {
 		std::cout << "k: " << model.getK() << " run: " << (j + 1) << std::endl;
-		statPack.vals.first.push_back(estimator.gather());
-		statPack.vals.second.push_back(model.gatherWithThreads(16));
+		data.vals.second.push_back(model.gatherWithThreads(16));
 		pt.addSample(std::move(model.getNodeValues()));
 		auto newTime = std::chrono::high_resolution_clock::now();
 		float frameTime = std::chrono::duration<float, std::chrono::milliseconds::period>(newTime - currentTime).count();
@@ -76,63 +81,64 @@ auto doTrial(u32 k, u32 iterations) -> StatsPack {
 			if (pt.checkForPeriodicityOfRecent()) // second one is here to place a breakpoint on confirms to examine process for validity
 				break;
 	}
-	statPack.k = k;
+	return true;
+}
+auto doStats(StatsPack& data) -> bool {
+	data.estMean = Stats::arithmeticMean(data.vals.first);
+	data.actMean = Stats::arithmeticMean(data.vals.second);
 
-	statPack.estMean = Stats::arithmeticMean(statPack.vals.first);
-	statPack.actMean = Stats::arithmeticMean(statPack.vals.second);
+	data.estGeoMean = Stats::geometricMean(data.vals.first);
+	data.actGeoMean = Stats::geometricMean(data.vals.second);
 
-	statPack.estGeoMean = Stats::geometricMean(statPack.vals.first);
-	statPack.actGeoMean = Stats::geometricMean(statPack.vals.second);
+	data.estHarmMean = Stats::harmonicMean(data.vals.first);
+	data.actHarmMean = Stats::harmonicMean(data.vals.second);
 
-	statPack.estHarmMean = Stats::harmonicMean(statPack.vals.first);
-	statPack.actHarmMean = Stats::harmonicMean(statPack.vals.second);
+	data.estMedian = Stats::median(data.vals.first);
+	data.actMedian = Stats::median(data.vals.second);
 
-	statPack.estMedian = Stats::median(statPack.vals.first);
-	statPack.actMedian = Stats::median(statPack.vals.second);
-
-	statPack.estMidrange = Stats::midrange(statPack.vals.first);
-	statPack.actMidrange = Stats::midrange(statPack.vals.second);
+	data.estMidrange = Stats::midrange(data.vals.first);
+	data.actMidrange = Stats::midrange(data.vals.second);
 
 	//auto estMode = Stats::mode(vals.first);
 	//auto actMode = Stats::mode(vals.second);
 
-	statPack.estSampVariance = Stats::sampleVariance(statPack.vals.first, statPack.estMean);
-	statPack.actSampVariance = Stats::sampleVariance(statPack.vals.second, statPack.actMean);
+	data.estSampVariance = Stats::sampleVariance(data.vals.first, data.estMean);
+	data.actSampVariance = Stats::sampleVariance(data.vals.second, data.actMean);
 
-	statPack.estSampStdDeviation = Stats::sampleStandardDeviation(statPack.vals.first, statPack.estMean);
-	statPack.actSampStdDeviation = Stats::sampleStandardDeviation(statPack.vals.second, statPack.actMean);
+	data.estSampStdDeviation = Stats::sampleStandardDeviation(data.vals.first, data.estMean);
+	data.actSampStdDeviation = Stats::sampleStandardDeviation(data.vals.second, data.actMean);
 
-	statPack.estPopVariance = Stats::populationVariance(statPack.vals.first, statPack.estMean);
-	statPack.actPopVariance = Stats::populationVariance(statPack.vals.second, statPack.actMean);
+	data.estPopVariance = Stats::populationVariance(data.vals.first, data.estMean);
+	data.actPopVariance = Stats::populationVariance(data.vals.second, data.actMean);
 
-	statPack.estPopStdDeviation = Stats::populationStandardDeviation(statPack.vals.first, statPack.estMean);
-	statPack.actPopStdDeviation = Stats::populationStandardDeviation(statPack.vals.second, statPack.actMean);
+	data.estPopStdDeviation = Stats::populationStandardDeviation(data.vals.first, data.estMean);
+	data.actPopStdDeviation = Stats::populationStandardDeviation(data.vals.second, data.actMean);
 
-	statPack.estSampSkewness = Stats::sampleSkewness(statPack.vals.first, statPack.estMean, statPack.estSampStdDeviation);
-	statPack.actSampSkewness = Stats::sampleSkewness(statPack.vals.second, statPack.actMean, statPack.actSampStdDeviation);
+	data.estSampSkewness = Stats::sampleSkewness(data.vals.first, data.estMean, data.estSampStdDeviation);
+	data.actSampSkewness = Stats::sampleSkewness(data.vals.second, data.actMean, data.actSampStdDeviation);
 
-	statPack.estPopSkewness = Stats::populationSkewness(statPack.vals.first, statPack.estMean, statPack.estPopStdDeviation);
-	statPack.actPopSkewness = Stats::populationSkewness(statPack.vals.second, statPack.actMean, statPack.actPopStdDeviation);
+	data.estPopSkewness = Stats::populationSkewness(data.vals.first, data.estMean, data.estPopStdDeviation);
+	data.actPopSkewness = Stats::populationSkewness(data.vals.second, data.actMean, data.actPopStdDeviation);
 
-	statPack.covariance = Stats::covariance(statPack.vals.first, statPack.vals.second, statPack.estMean, statPack.actMean);
-	statPack.sampCovariance = Stats::sampleCovariance(statPack.vals.first, statPack.vals.second, statPack.estMean, statPack.actMean);
+	data.covariance = Stats::covariance(data.vals.first, data.vals.second, data.estMean, data.actMean);
+	data.sampCovariance = Stats::sampleCovariance(data.vals.first, data.vals.second, data.estMean, data.actMean);
 
-	statPack.estMin = Stats::min(statPack.vals.first);
-	statPack.actMin = Stats::min(statPack.vals.second);
+	data.estMin = Stats::min(data.vals.first);
+	data.actMin = Stats::min(data.vals.second);
 
-	statPack.estMax = Stats::max(statPack.vals.first);
-	statPack.actMax = Stats::max(statPack.vals.second);
+	data.estMax = Stats::max(data.vals.first);
+	data.actMax = Stats::max(data.vals.second);
 
-	statPack.popPCC = Stats::populationPearsonCorrelationCoefficient(
-		statPack.vals.first, statPack.vals.second,
-		statPack.estMean, statPack.actMean,
-		statPack.estPopStdDeviation, statPack.actPopStdDeviation
+	data.popPCC = Stats::populationPearsonCorrelationCoefficient(
+		data.vals.first, data.vals.second,
+		data.estMean, data.actMean,
+		data.estPopStdDeviation, data.actPopStdDeviation
 	);
-	statPack.sampPCC = Stats::samplePearsonCorrelationCoefficient(
-		statPack.vals.first, statPack.vals.second,
-		statPack.estMean, statPack.actMean
+	data.sampPCC = Stats::samplePearsonCorrelationCoefficient(
+		data.vals.first, data.vals.second,
+		data.estMean, data.actMean
 	);
-	return statPack;
+	return true;
 }
 
 auto dumpStatsPackInFile(StatsPack data, std::ofstream& out, const u32 maxIterations) -> void {
@@ -291,13 +297,18 @@ auto main() -> int {
 	//std::cout << "samp skew: " << sampSkew << std::endl;
 
 	for (u32 k = startK; k <= maxK; k += 2) {
+		StatsPack data{};
+		data.k = k;
 		for (u32 trial = 0; trial < trialsPerK; trial++) {
+			StatsPack curr = data; // copy
+			curr.trial = trial + 1;
 			std::string filepath(baseFileName);
-			filepath += "_k" + std::to_string(k) + "_t" + std::to_string(trial + 1) + ".csv";
+			filepath += "_k" + std::to_string(curr.k) + "_t" + std::to_string(curr.trial) + ".csv";
 			std::ofstream outputFile(filepath.c_str());
-			StatsPack data = doTrial(k, iterations);
-			data.trial = trial + 1;
-			dumpStatsPackInFile(data, outputFile, iterations);
+			doEstimate(curr, k, iterations);
+			doTrial(curr, k, iterations);
+			doStats(curr);
+			dumpStatsPackInFile(curr, outputFile, iterations);
 		}
 	}
 
