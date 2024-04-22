@@ -19,4 +19,5 @@ public:
 	auto checkForPeriodicityOfAll() -> bool;
 	auto addSample(const PackedBoolVector&) -> void;
 	auto addSample(const PackedBoolVector&&) -> void;
+	auto checkForPeriodicityOfRecentWithThreads(u32) -> bool;
 };

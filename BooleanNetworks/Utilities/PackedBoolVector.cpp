@@ -1,6 +1,8 @@
 
 module PackedBoolVector;
 
+import ThreadPool;
+
 import <stdexcept>;
 import <bit>;
 
@@ -17,7 +19,6 @@ PackedBoolVector::PackedBoolVector(u32 size) : data() {
 		? remainder - 1
 		: this->DataTypeSize - 1;
 }
-PackedBoolVector::~PackedBoolVector() {}
 
 auto PackedBoolVector::size() const -> u32 {
 	return ((static_cast<u32>(this->data.size()) - 1) * this->DataTypeSize) + offset + 1;

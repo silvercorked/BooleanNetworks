@@ -15,10 +15,10 @@ import <utility>;
 import <fstream>;
 import <string>;
 
-constexpr const u32 iterations = 5000;
+constexpr const u32 iterations = 100;
 constexpr const u32 maxK = 25;
 constexpr const u32 trialsPerK = 10;
-constexpr const u32 nodeCount = 1024 * 8;
+constexpr const u32 nodeCount = 1024 * 32;
 const std::string baseFileName("output");
 constexpr const u32 startK = 3;
 
@@ -65,19 +65,19 @@ auto doTrial(StatsPack& data, u32 k, u32 iterations) -> bool {
 		CellularAutomataResources::CellularAutomataParentConfigEnum::RANDOMIZE_PARENTS,
 		CellularAutomataResources::CellularAutomataInitialConfigEnum::RANDOM
 	};
-	PeriodicityTracker pt(10);
+	PeriodicityTracker pt(24);
 	data.vals.second.clear();
 	data.vals.second.reserve(iterations); // may not all be used cause periodicity tracker might cause early break
 	auto currentTime = std::chrono::high_resolution_clock::now();
 	for (u32 j = 0; j < iterations; j++) {
 		std::cout << "k: " << model.getK() << " run: " << (j + 1) << std::endl;
-		data.vals.second.push_back(model.gatherWithThreads(16));
+		data.vals.second.push_back(model.gatherWithThreads(8));
 		pt.addSample(std::move(model.getNodeValues()));
 		auto newTime = std::chrono::high_resolution_clock::now();
 		float frameTime = std::chrono::duration<float, std::chrono::milliseconds::period>(newTime - currentTime).count();
 		currentTime = newTime;
 		std::cout << "Iteration Time: " << frameTime << std::endl;
-		if (pt.checkForPeriodicityOfRecent())
+		if (pt.checkForPeriodicityOfRecentWithThreads(8))
 			if (pt.checkForPeriodicityOfRecent()) // second one is here to place a breakpoint on confirms to examine process for validity
 				break;
 	}

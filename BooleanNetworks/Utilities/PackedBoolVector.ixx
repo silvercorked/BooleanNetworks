@@ -14,7 +14,7 @@ export class PackedBoolVector {
 
 public:
 	PackedBoolVector(u32);
-	~PackedBoolVector();
+	~PackedBoolVector() = default;
 
 	auto size() const -> u32;
 	auto at(u32) const -> bool;
