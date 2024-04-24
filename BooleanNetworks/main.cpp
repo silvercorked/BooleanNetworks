@@ -15,10 +15,10 @@ import <utility>;
 import <fstream>;
 import <string>;
 
-constexpr const u32 iterations = 100;
-constexpr const u32 maxK = 25;
+constexpr const u32 iterations = 5000;
+constexpr const u32 maxK = 35;
 constexpr const u32 trialsPerK = 10;
-constexpr const u32 nodeCount = 1024 * 32;
+constexpr const u32 nodeCount = 1024 * 8;
 const std::string baseFileName("output");
 constexpr const u32 startK = 3;
 
