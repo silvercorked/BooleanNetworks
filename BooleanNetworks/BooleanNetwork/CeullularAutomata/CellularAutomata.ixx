@@ -39,9 +39,9 @@ public:
 	~CellularAutomata() = default;
 
 	auto go() -> void;
-	auto go(i32 times) -> void;
+	auto go(const i32 times) -> void;
 	auto gather() -> f64;
-	auto gather(i32 times) -> std::vector<f64>;
+	auto gather(const i32 times) -> std::vector<f64>;
 
 	auto goWithThreads(const i32 numThreads) -> void;
 	auto gatherWithThreads(const i32 numThreads) -> f64;
@@ -100,8 +100,7 @@ CellularAutomata::CellularAutomata(
 auto CellularAutomata::go() -> void {
 	auto& writeTo = (this->which ? this->data : this->data2);
 	auto& readFrom = (this->which ? this->data2 : this->data);
-	i32 halfK = ((this->k - 1) >> 1); // k = 3, means 2 other parents and 1 self refernce
-	i32 size = this->data.size();
+	const i32 size = this->data.size();
 	for (i32 i = 0; i < size; i++) {
 		std::vector<bool> args;
 		args.reserve(this->k);
@@ -113,7 +112,7 @@ auto CellularAutomata::go() -> void {
 	this->actual = this->getCurrentDensity();
 	this->which = !this->which;
 }
-auto CellularAutomata::go(i32 times) -> void {
+auto CellularAutomata::go(const i32 times) -> void {
 	for (i32 i = 0; i < times; i++) {
 		this->go();
 	}
@@ -122,7 +121,7 @@ auto CellularAutomata::gather() -> f64 {
 	this->go();
 	return this->getActual();
 }
-auto CellularAutomata::gather(i32 times) -> std::vector<f64> {
+auto CellularAutomata::gather(const i32 times) -> std::vector<f64> {
 	std::vector<f64> actuals;
 	actuals.reserve(times);
 	for (i32 i = 0; i < times; i++) {
@@ -136,7 +135,6 @@ auto CellularAutomata::goWithThreads(const i32 numThreads) -> void {
 		throw std::runtime_error("must use at least 1 thread");
 	auto& writeTo = (this->which ? this->data : this->data2);
 	const auto& readFrom = (this->which ? this->data2 : this->data);
-	i32 halfK = ((this->k - 1) >> 1); // k = 3, means 2 other parents and 1 self refernce
 	const i32 size = this->data.size();
 	const i32 numPerThread = size / numThreads;
 	const i32 currThreadEnd = numPerThread;
