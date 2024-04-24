@@ -296,6 +296,7 @@ auto main() -> int {
 	//std::cout << "pop skew: " << popSkew << std::endl;
 	//std::cout << "samp skew: " << sampSkew << std::endl;
 
+	/*
 	for (u32 k = startK; k <= maxK; k += 2) {
 		StatsPack data{};
 		data.k = k;
@@ -310,6 +311,14 @@ auto main() -> int {
 			doStats(curr);
 			dumpStatsPackInFile(curr, outputFile, iterations);
 		}
+	}
+	*/
+
+	std::vector<f32> ranksTest = { 3, 8, 10, 17, 24, 27, -4, -5, -6, 5, 3, 3, 8, -5 };
+	auto ranks = Stats::getOrdinalRanks(ranksTest);
+	auto fractionalRanks = Stats::getFractionalRanks(ranksTest);
+	for (auto i = 0; i < ranksTest.size(); i++) {
+		std::cout << "value: " << ranksTest[i] << " rank: " << ranks[i] << " fractional rank: " << fractionalRanks[i] << std::endl;
 	}
 
 	return 0;

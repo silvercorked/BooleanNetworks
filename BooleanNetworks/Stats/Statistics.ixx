@@ -9,6 +9,7 @@ export import :Midrange;
 export import :MinMax;
 export import :Mode;
 export import :Skewness;
+export import :Ranks;
 export import :Variance;
 
 export import :StandardScore;

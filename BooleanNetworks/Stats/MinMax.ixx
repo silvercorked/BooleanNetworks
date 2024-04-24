@@ -9,7 +9,7 @@ import <functional>;
 import <utility>;
 
 template <NumericRange Range>
-auto getByOperation(
+auto getValueByOperation(
 	Range&& values, 
 	std::function<
 		bool(
@@ -20,13 +20,36 @@ auto getByOperation(
 ) -> std::ranges::range_value_t<Range> {
 	const auto len = values.size();
 	if (len == 0) return 0;
-	auto curr = values[1];
+	auto curr = values[0];
 	for (auto i = 1; i < len; i++) {
 		const auto candidate = values[i];
 		if (op(curr, candidate))
 			curr = candidate;
 	}
 	return curr;
+}
+template <NumericRange Range>
+auto getIndexByOperation(
+	Range&& values,
+	std::function<
+	bool(
+		std::ranges::range_value_t<Range>,
+		std::ranges::range_value_t<Range>
+		)
+	> op
+) -> std::ranges::range_size_t<Range> {
+	const auto len = values.size();
+	if (len == 0) return 0;
+	auto currIndex = 0;
+	auto curr = values[0];
+	for (auto i = 1; i < len; i++) {
+		const auto candidate = values[i];
+		if (op(curr, candidate)) {
+			curr = candidate;
+			currIndex = i;
+		}
+	}
+	return currIndex;
 }
 
 export 
@@ -43,11 +66,11 @@ const std::function<bool(N, N)> greatest = [](N curr, N candidate) -> bool {
 export namespace Stats {
 	template <NumericRange Range>
 	auto min(Range&& values) -> std::ranges::range_value_t<Range> {
-		return getByOperation(values, least<std::ranges::range_value_t<decltype(values)>>);
+		return getValueByOperation(values, least<std::ranges::range_value_t<decltype(values)>>);
 	}
 	template <NumericRange Range>
 	auto max(Range&& values) -> std::ranges::range_value_t<Range> {
-		return getByOperation(values, greatest<std::ranges::range_value_t<decltype(values)>>);
+		return getValueByOperation(values, greatest<std::ranges::range_value_t<decltype(values)>>);
 	}
 	template <NumericRange Range>
 	auto minMax(Range&& values) -> std::pair<std::ranges::range_value_t<Range>, std::ranges::range_value_t<Range>> {
@@ -63,5 +86,13 @@ export namespace Stats {
 				max = candidate;
 		}
 		return std::make_pair(min, max);
+	}
+	template <NumericRange Range>
+	auto minIndex(Range&& values) -> std::ranges::range_size_t<Range> {
+		return getIndexByOperation(values, least<std::ranges::range_value_t<decltype(values)>>);
+	}
+	template <NumericRange Range>
+	auto maxIndex(Range&& values) -> std::ranges::range_size_t<Range> {
+		return getIndexByOperation(values, greatest<std::ranges::range_value_t<decltype(values)>>);
 	}
 };

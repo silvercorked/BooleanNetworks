@@ -93,5 +93,20 @@
     <ClCompile Include="BooleanNetwork\CeullularAutomata\CellularAutomataResources.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Stats\Ranking\Ranks.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stats\Ranking\SpearmanRankCorrelationCoefficient.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stats\Ranking\MannWhitenyUStatistic.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stats\Ranking\MWWSignedRanksTStatistic.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stats\Ranking\WilcoxonSignedRankTest.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

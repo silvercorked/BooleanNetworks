@@ -34,6 +34,11 @@
     <ClCompile Include="Stats\MinMax.ixx" />
     <ClCompile Include="Stats\Mode.ixx" />
     <ClCompile Include="Stats\PearsonCorrelationCoefficient.ixx" />
+    <ClCompile Include="Stats\Ranking\MannWhitenyUStatistic.ixx" />
+    <ClCompile Include="Stats\Ranking\MWWSignedRanksTStatistic.ixx" />
+    <ClCompile Include="Stats\Ranking\Ranks.ixx" />
+    <ClCompile Include="Stats\Ranking\SpearmanRankCorrelationCoefficient.ixx" />
+    <ClCompile Include="Stats\Ranking\WilcoxonSignedRankTest.ixx" />
     <ClCompile Include="Stats\Skewness.ixx" />
     <ClCompile Include="Stats\StandardScore.ixx" />
     <ClCompile Include="Stats\Statistics.ixx" />
