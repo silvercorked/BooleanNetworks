@@ -9,11 +9,16 @@ export import :Midrange;
 export import :MinMax;
 export import :Mode;
 export import :Skewness;
-export import :Ranks;
 export import :Variance;
 
 export import :StandardScore;
 export import :PearsonCorrelationCoefficient;
+
+export import :Ranks;
+export import :MannWhitenyUStatistic;
+export import :MWWSignedRanksTStatistic;
+export import :SpearmanRankCorrelationCoefficient;
+export import :WilcoxonSignedRankTest;
 
 
 

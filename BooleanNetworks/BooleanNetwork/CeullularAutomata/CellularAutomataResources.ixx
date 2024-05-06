@@ -27,10 +27,10 @@ export namespace CellularAutomataResources {
 				if (val) count++;
 			return count;
 		}
-		auto isTotalisingForSum(const std::vector<bool>& values, const u32 totalisingSum) -> bool {
+		auto isTotalisingFor(const std::vector<bool>& values, const u32 totalisingSum) -> bool {
 			return countHighs(values) == totalisingSum;
 		}
-		auto isTotalisingForSums(const std::vector<bool>& values, const std::vector<u32>& totalisingSums) -> bool {
+		auto isTotalisingForAnyOf(const std::vector<bool>& values, const std::vector<u32>& totalisingSums) -> bool {
 			bool any = false;
 			const u32 highCount = countHighs(values);
 			for (const u32 totalisingSum : totalisingSums)
@@ -40,14 +40,14 @@ export namespace CellularAutomataResources {
 	};
 
 	const RuleFunctionType ruleFunc22 = [](std::vector<bool> const& bools) -> bool {
-		return Utility::isTotalisingForSum(bools, 1);
+		return Utility::isTotalisingFor(bools, 1);
 	};
 	const RuleFunctionType ruleFunc126 = [](std::vector<bool> const& bools) -> bool {
 		std::vector<u32> counts;
 		counts.reserve(bools.size() - 1);
 		for (u32 i = 1; i < bools.size(); i++) // not 0 and not all bools high
 			counts.push_back(i);
-		return Utility::isTotalisingForSums(bools, counts);
+		return Utility::isTotalisingForAnyOf(bools, counts);
 	};
 	const MeanFieldApproximationFunctionType meanFieldApproximationRule22 = [](f64 prevDensityOfOnes, u32 parentCount) -> f64 {
 		return static_cast<f64>(parentCount) * prevDensityOfOnes * pow(1.0 - prevDensityOfOnes, static_cast<f64>(parentCount - 1)); // pg 33, p(t+1) = (1+k)p(t)(1-p(t))^k, where k is 1 less than number of inputs

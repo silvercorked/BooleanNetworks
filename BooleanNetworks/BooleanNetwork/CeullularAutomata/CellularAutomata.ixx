@@ -17,6 +17,8 @@ import <set>;
 import <stdexcept>;
 import <thread>;
 import <chrono>;
+import <execution>;
+import <algorithm>;
 
 export class CellularAutomata {
 	PackedBoolVector data;
@@ -166,8 +168,8 @@ auto CellularAutomata::goWithThreads(const i32 numThreads) -> void {
 			while (tp->busy()) { std::this_thread::yield(); } // wait for queue to empty (should already be empty)
 	} // wait for threads to end work
 	// now update actual
-	this->actual = this->getCurrentDensity();
 	this->which = !this->which;
+	this->actual = this->getCurrentDensity();
 }
 auto CellularAutomata::gatherWithThreads(const i32 numThreads) -> f64 {
 	this->goWithThreads(numThreads);

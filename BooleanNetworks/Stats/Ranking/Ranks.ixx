@@ -26,32 +26,31 @@ export namespace Stats {
 		Range&& values
 	) -> std::vector<std::size_t> {
 		const auto len = values.size();
-		if (len == 0)
-			throw std::runtime_error("cannot create ordinal ranks without elements. empty container.");
-		std::vector<std::size_t> indexBlacklist;
-		std::vector<std::size_t> out(len, 0);
-		indexBlacklist.reserve(len);
-		std::size_t currOrdinalVal = 1;
-		while (indexBlacklist.size() != len) {
-			std::size_t minIndex = 0;
-			auto minVal = std::numeric_limits<std::ranges::range_value_t<Range>>::max();
-			for (auto i = 0; i < len; i++) {
-				bool found = false;
-				for (const auto& index : indexBlacklist) {
-					if (i == index) {
-						found = true;
-						break;
-					}
-				}
-				if (found) continue;
-				if (values[i] < minVal) {
-					minVal = values[i];
-					minIndex = i;
-				}
-			}
-			out[minIndex] = currOrdinalVal;
-			currOrdinalVal++;
-			indexBlacklist.push_back(minIndex);
+		std::vector<std::ranges::range_value_t<Range>> vals(values); // get copy to modify
+		std::vector<std::size_t> out;
+		std::vector<std::size_t> maxIndexes;
+		std::size_t currOrdinal = 1;
+		// find max elements (ie, last elements)
+		out.resize(len);
+		auto max = std::numeric_limits<std::ranges::range_value_t<Range>>::min();
+		for (const auto elem : vals) // figure out the max value
+			if (elem > max)
+				max = elem;
+		for (auto i = 0; i < len; i++) // get all indexes that have the max value
+			if (vals[i] == max)
+				maxIndexes.push_back(i);
+		// max is now a valid replacement for already found min values (can set each found min value with the max value to call min again)
+		const auto maxIndexLen = maxIndexes.size();
+		for (auto i = 0; i < len - maxIndexLen; i++) { // skip end, which is maxes, because we already have their numbers
+			const auto forIter = std::min_element(vals.begin(), vals.end());
+			const auto index = std::distance(vals.begin(), forIter);
+			(*forIter) = max; // replace current min with max, allowing for the next min search to find a new index
+			out[index] = currOrdinal; // order will fill out array 
+			currOrdinal++; // start filling out
+		}
+		for (auto i = 0; i < maxIndexLen; i++) {
+			out[maxIndexes[i]] = currOrdinal; // handle maxes, which were skipped by above loop
+			currOrdinal++;
 		}
 		return out;
 	}

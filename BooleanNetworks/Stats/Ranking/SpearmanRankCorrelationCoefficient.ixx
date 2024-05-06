@@ -16,7 +16,7 @@ export namespace Stats {
         Range&& values2
     ) -> f64 { // https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient
         const auto len = values1.size();
-        if (len == values2.size())
+        if (len != values2.size())
             throw std::runtime_error("must be the same size");
         auto ranks1 = Stats::getFractionalRanks(values1);
         auto ranks2 = Stats::getFractionalRanks(values2);

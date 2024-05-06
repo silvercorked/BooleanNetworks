@@ -5,6 +5,8 @@ import ThreadPool;
 
 import <stdexcept>;
 import <memory>;
+import <algorithm>;
+import <execution>;
 
 PeriodicityTracker::PeriodicityTracker(u32 depth) :
 	depth(depth),
@@ -46,23 +48,18 @@ auto PeriodicityTracker::addSample(const PackedBoolVector&& nSample) -> void {
 	this->prevSamples.push_back(std::move(nSample)); // add to back
 }
 
-auto PeriodicityTracker::checkForPeriodicityOfRecentWithThreads(const u32 numThreads) -> bool {
-	if (numThreads < 1)
-		throw std::runtime_error("must use at least 1 thread");
+auto PeriodicityTracker::checkForPeriodicityOfRecentWithThreads() -> bool {
 	const auto len = this->prevSamples.size();
-	if (len < 2) return false; // can't have periodicity without at least 2 elements in tracker
 	bool result = false;
 	const u32 mostRecent = len - 1;
-	{
-		std::unique_ptr<ThreadPool> tp;
-		tp = std::make_unique<ThreadPool>(numThreads);
-		for (i32 i = 0; i < mostRecent; i++) { // last is most recent. check that against all others
-			tp->queueTask([this, i, mostRecent, &result]() -> void {
-				if (this->prevSamples.at(mostRecent) == this->prevSamples.at(i))
-					result = true;
-			});
+	std::for_each_n(
+		std::execution::par_unseq,
+		this->prevSamples.cbegin(),
+		mostRecent,
+		[latest = this->prevSamples[mostRecent], &result](auto& sample) {
+			if (sample == latest)
+				result = true;
 		}
-		while (tp->busy() && !result) { std::this_thread::yield(); } // wait for queue to empty (should already be empty)
-	} // if result is true, break loop and start killing threads (at this point, their work doesn't matter anymore
+	);
 	return result;
 }

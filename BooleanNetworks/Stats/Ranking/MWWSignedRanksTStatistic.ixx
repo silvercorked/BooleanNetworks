@@ -14,14 +14,16 @@ export namespace Stats {
     auto MWWSignedRanksTStatistic(
         Range&& values1,
         Range&& values2
-    ) -> f64 { // https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient
-        const auto len1 = nums1.size();
-        const auto len2 = nums2.size();
-        auto all = std::vector<V>();
+    ) -> f64 {
+        const auto len1 = values1.size();
+        const auto len2 = values2.size();
+        if (len1 != len2)
+            throw std::runtime_error("must be the same size");
+        auto all = std::vector<std::ranges::range_value_t<Range>>();
         all.reserve(len1 + len2);
-        for (const auto& n : nums1)
+        for (const auto& n : values1)
             all.push_back(n);
-        for (const auto& n : nums2)
+        for (const auto& n : values2)
             all.push_back(n);
         auto ranks = getFractionalRanks(all);
         const auto N = ranks.size();

@@ -1,5 +1,5 @@
 
-export module Statistics:SpearmanRankCorrelationCoefficient;
+export module Statistics:WilcoxonSignedRankTest;
 
 import PrimitiveTypes;
 
@@ -14,15 +14,16 @@ export namespace Stats {
     auto wilcoxonSignedRankTest(
         Range&& values1,
         Range&& values2
-    ) -> f64 { // https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient
-        const auto len = nums1.size();
-        assert(len == nums2.size());
-        auto diffs = std::vector<V>();
+    ) -> f64 {
+        const auto len = values1.size();
+        if (len != values2.size())
+            throw std::runtime_error("must be the same size");
+        auto diffs = std::vector<std::ranges::range_value_t<Range>>();
         auto signs = std::vector<bool>(); // true -> pos, false -> neg
         for (auto i = 0; i < len; i++) {
-            if (nums1[i] == nums2[i]) continue; // drop zeroes
-            f64 diff = static_cast<i64>(nums1[i]) - static_cast<int64_t>(nums2[i]);
-            diffs.push_back(abs(diff));
+            if (values1[i] == values2[i]) continue; // drop zeroes
+            auto diff = values1[i] - values2[i];
+            diffs.push_back(std::abs(diff));
             signs.push_back((diff > 0)); // wont be equal cases
         }
         auto ranks = getFractionalRanks(diffs);
