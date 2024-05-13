@@ -1,5 +1,5 @@
 Trial: 251 estimated 27, Trial: 251 actual 27, 
-2.01166e-07, 0.502258, 
+2.01166e-07, 0.49762, 
 5.43144e-06, 0, 
 0.000146628, 0, 
 0.0039439, 0, 
@@ -5002,4 +5002,4 @@ Trial: 251 estimated 27, Trial: 251 actual 27,
 
 
 , estimated mean, actual mean, estimated geometric mean, actual geometric mean, estimated harmonic mean, actual harmonic mean, estimated median, actual median, estimated midrange, actual midrange, estimated sample variance, actual sample variance, estimated sample deviation, actual sample deviation, estimated population variance, actual population variance, estimated population deviation, actual population deviation, estimated sample skewness, actual sample skewness, estimated population skewness, actual population skewness, covariance, sample covariance, estimated min, actual min, estimated max, actual max, sample Pearson Correlation Coefficient, population Pearson Correlation Coefficient, Mann Whiteny U Statistic, Mann-Whiteny-Wilcoxon Signed Ranks T Statistic, Spearman Rank Correlation Coefficient, Wilcoxon Signed Rank Test
-k = 27,0.102877,0.000100452,0.00551794,0,1.53404e+11,inf,0.0291104,0,0.187382,0.251129,0.0247732,5.04527e-05,0.157395,0.00710301,0.0247683,5.04426e-05,0.157379,0.00710229,1.12803,70.7107,1.12769,70.6895,-1.03341e-05,-1.03362e-05,2.01166e-07,0,0.374763,0.502258,-0.00924543,-0.00924543,5000,92.5593,0.0141638,0,
+k = 27,0.102877,9.95239e-05,0.00551794,0,1.53404e+11,inf,0.0291104,0,0.187382,0.24881,0.0247732,4.95251e-05,0.157395,0.0070374,0.0247683,4.95152e-05,0.157379,0.0070367,1.12803,70.7107,1.12769,70.6895,-1.02387e-05,-1.02407e-05,2.01166e-07,0,0.374763,0.49762,-0.00924543,-0.00924543,5000,92.5593,0.0141638,0,
